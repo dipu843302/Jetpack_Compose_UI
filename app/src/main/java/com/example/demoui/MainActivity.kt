@@ -37,7 +37,7 @@ class MainActivity : ComponentActivity() {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    BreakStatus(status = "In a Meeting")
+                    MeetingBreak(status = "In a Meeting")
                     // Available()
                     // NotTakingCalls()
                     //StatusView(takingCallOrNot = true,"Taking Calls","I can take calls")

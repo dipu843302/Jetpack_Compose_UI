@@ -1,4 +1,4 @@
-package com.example.demoui.status
+package com.example.demoui.uitest
 
 import androidx.compose.ui.test.junit4.createComposeRule
 import com.example.demoui.Available
@@ -8,7 +8,7 @@ import org.junit.Rule
 import org.junit.Test
 
 
-class StatusTest {
+class StatusViewTest {
 
     @get:Rule
     val composeTestRule = createComposeRule()

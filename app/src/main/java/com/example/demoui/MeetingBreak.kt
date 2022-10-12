@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun BreakStatus(status: String) {
+fun MeetingBreak(status: String) {
     Card(
         modifier = Modifier
             .width(344.dp)
@@ -141,5 +141,5 @@ fun BreakStatus(status: String) {
 @Preview
 @Composable
 fun DefaultPreview2() {
-    BreakStatus(status = "In a Meeting")
+    MeetingBreak(status = "In a Meeting")
 }
