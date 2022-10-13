@@ -1,6 +1,8 @@
 package com.example.demoui.uitest
 
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithText
 import com.example.demoui.Available
 import com.example.demoui.NotTakingCalls
 import com.example.demoui.StatusView
@@ -16,9 +18,14 @@ class StatusViewTest {
 
     @Test
     fun testStatusUI() {
+        val checkStatus=true
+        val statusHeading="Taking Calls"
+        val statusSubHeading="I can take calls"
         composeTestRule.setContent {
-            StatusView(true, "Taking Calls", "I can take calls")
+            StatusView(checkStatus,statusHeading ,statusSubHeading )
         }
+        composeTestRule.onNodeWithText(statusHeading).assertExists()
+        composeTestRule.onNodeWithText(statusHeading).assertIsDisplayed()
     }
 
     @Test
