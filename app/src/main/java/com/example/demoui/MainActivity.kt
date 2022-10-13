@@ -10,10 +10,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,14 +29,28 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Column(
                     modifier = Modifier
-                        .heightIn(481.dp)
-                        .width(360.dp),
+                        .fillMaxWidth().fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    MeetingBreak(status = "In a Meeting")
+
+                    var dialogState by remember {
+                        mutableStateOf(false)
+                    }
+
+                    Button(onClick = {
+                        dialogState = true
+                    }) {
+                        Text(text = "Status")
+                    }
+                    CustomDialog(dialogState = dialogState, onDismissRequest = {
+                        dialogState=it
+                    })
+
+                    //   StatusViewText("In a meeting")
+                    // StatusBreak(status = "In a Meeting")
                     // Available()
-                    // NotTakingCalls()
+                    //  NotTakingCalls()
                     //StatusView(takingCallOrNot = true,"Taking Calls","I can take calls")
                 }
             }
@@ -47,12 +58,11 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-
 @Composable
 fun StatusView(
     takingCallOrNot: Boolean,
-    statusHeading:String,
-    statusSubHeading:String,
+    statusHeading: String,
+    statusSubHeading: String,
 ) {
 
     val checkStatus by remember {
@@ -61,12 +71,11 @@ fun StatusView(
 
     Card(
         modifier = Modifier
-            .padding(10.dp)
             .width(320.dp)
             .heightIn(410.dp)
             .background(Color.White),
 
-        shape = RoundedCornerShape(corner = CornerSize(15.dp))
+        shape = RoundedCornerShape(corner = CornerSize(20.dp))
     ) {
         Column {
             Row(modifier = Modifier.padding(start = 22.dp, top = 26.dp, end = 24.dp)) {
@@ -106,9 +115,9 @@ fun Available() {
             .heightIn(64.dp)
             .padding(start = 18.dp, top = 24.dp, bottom = 20.dp, end = 22.dp),
         backgroundColor = Color(0xFFf6f8fc),
-        border=BorderStroke(1.dp, Color(0xff009900)),
+        border = BorderStroke(1.dp, Color(0xff009900)),
         shape = RoundedCornerShape(corner = CornerSize(8.dp)),
-        ) {
+    ) {
         Column {
             Row(
                 modifier = Modifier
@@ -146,8 +155,7 @@ fun NotTakingCalls() {
         modifier = Modifier
             .padding(start = 10.dp)
             .width(320.dp)
-            .height(282.dp)
-        ,
+            .height(282.dp),
         elevation = 0.dp,
         backgroundColor = Color.White,
         border = BorderStroke(0.dp, Transparent)
@@ -157,126 +165,54 @@ fun NotTakingCalls() {
                 text = "I'm Not Taking Calls",
                 color = Color(0xFF8495b1),
                 fontSize = 14.sp,
-                modifier = Modifier.padding( top = 15.dp, bottom = 5.dp)
+                modifier = Modifier.padding(top = 15.dp, bottom = 5.dp)
             )
 
-            Column(modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                Card(
-                    modifier = Modifier
-                        .width(320.dp)
-                        .height(50.dp)
-                        .padding(end = 14.dp, top = 8.dp),
-                    backgroundColor = Color(0xFFf6f8fc),
-                    shape = RoundedCornerShape(corner = CornerSize(8.dp)),
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.red),
-                            contentDescription = "",
-                            modifier = Modifier
-                                .padding(start = 9.dp, top = 5.dp, end = 9.dp)
-                                .heightIn(9.dp)
-                                .width(9.dp)
-                        )
-                        Text(
-                            text = "In a Meeting",
-                            color = Color(0xFF020b2b),
-                            fontSize = 14.sp,
-                        )
-                    }
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp), horizontalAlignment = Alignment.CenterHorizontally
+            ) {
 
-                }
-                Card(
-                    modifier = Modifier
-                        .width(320.dp)
-                        .height(50.dp)
-                        .padding(end = 14.dp, top = 8.dp),
-                    backgroundColor = Color(0xFFf6f8fc),
-                    shape = RoundedCornerShape(corner = CornerSize(8.dp)),
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.red),
-                            contentDescription = "",
-                            modifier = Modifier
-                                .padding(start = 9.dp, top = 5.dp, end = 9.dp)
-                                .heightIn(9.dp)
-                                .width(9.dp)
-                        )
-                        Text(
-                            text = "At Lunch",
-                            color = Color(0xFF020b2b),
-                            fontSize = 14.sp,
-                        )
-                    }
-                }
-                Card(
-                    modifier = Modifier
-                        .width(320.dp)
-                        .height(50.dp)
-                        .padding(end = 14.dp, top = 8.dp),
-                    backgroundColor = Color(0xFFf6f8fc),
-                    shape = RoundedCornerShape(corner = CornerSize(8.dp)),
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.red),
-                            contentDescription = "",
-                            modifier = Modifier
-                                .padding(start = 9.dp, top = 5.dp, end = 9.dp)
-                                .heightIn(9.dp)
-                                .width(9.dp)
-                        )
-                        Text(
-                            text = "On Vacation",
-                            color = Color(0xFF020b2b),
-                            fontSize = 14.sp,
-                        )
-                    }
-                }
-                Card(
-                    modifier = Modifier
-                        .width(320.dp)
-                        .height(50.dp)
-                        .padding(end = 14.dp, top = 8.dp),
-                    backgroundColor = Color(0xFFf6f8fc),
-                    shape = RoundedCornerShape(corner = CornerSize(8.dp)),
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.red),
-                            contentDescription = "",
-                            modifier = Modifier
-                                .padding(start = 9.dp, top = 5.dp, end = 9.dp)
-                                .heightIn(9.dp)
-                                .width(9.dp)
-                        )
-                        Text(
-                            text = "Custom",
-                            color = Color(0xFF020b2b),
-                            fontSize = 14.sp,
-                        )
-                    }
-                }
+                StatusCardView("In a Meeting")
+                StatusCardView("At Lunch")
+                StatusCardView("On Vacation")
+                StatusCardView("Custom")
             }
+        }
+    }
+}
+
+@Composable
+fun StatusCardView(
+    StatusText: String
+) {
+    Card(
+        modifier = Modifier
+            .width(320.dp)
+            .height(50.dp)
+            .padding(end = 14.dp, top = 8.dp),
+        backgroundColor = Color(0xFFf6f8fc),
+        shape = RoundedCornerShape(corner = CornerSize(8.dp)),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.red),
+                contentDescription = "",
+                modifier = Modifier
+                    .padding(start = 9.dp, top = 5.dp, end = 9.dp)
+                    .heightIn(9.dp)
+                    .width(9.dp)
+            )
+            Text(
+                text = StatusText,
+                color = Color(0xFF020b2b),
+                fontSize = 14.sp,
+            )
         }
     }
 }
@@ -285,7 +221,7 @@ fun NotTakingCalls() {
 @Composable
 fun DefaultPreview() {
     DemoUITheme {
-        StatusView(takingCallOrNot = true,"Taking Calls","I can take calls")
+        StatusView(takingCallOrNot = true, "Taking Calls", "I can take calls")
 
         //  Available()
         //  NotTakingCalls()
