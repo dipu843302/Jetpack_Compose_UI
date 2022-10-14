@@ -3,29 +3,32 @@ package com.example.demoui
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.MagnifierStyle.Companion.Default
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.ViewCompositionStrategy.Companion.Default
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle.Companion.Default
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import java.time.format.TextStyle
+import androidx.compose.ui.window.Dialog
+import com.example.demoui.ui.theme.BackGroundColorGrey
+import com.example.demoui.ui.theme.StatusTextColorBlack
 
 @Composable
-fun StatusBreak(status: String) {
+fun StatusBreak(
+    status: String,
+    duration1: String,
+    duration2: String,
+    duration3: String,
+    duration4: String,
+) {
 
     Card(
         modifier = Modifier
@@ -58,8 +61,8 @@ fun StatusBreak(status: String) {
                         .heightIn(9.dp)
                         .width(9.dp)
                 )
-                StatusViewText("In a Meeting")
-               // Text(text = status, fontSize = 18.sp, color = Color(0xFF001818))
+                StatusViewText(status)
+
             }
             Text(
                 text = "Not taking calls until",
@@ -68,7 +71,7 @@ fun StatusBreak(status: String) {
                 modifier = Modifier.padding(start = 4.dp, top = 31.dp, bottom = 20.dp)
             )
             TextViewBreakCard(
-                "Further Notice",
+                duration1,
                 textColor = Color(0xFF6285FF),
                 borderColor = Color(0xFF6285FF),
                 backgroundColor = Color.White
@@ -77,28 +80,28 @@ fun StatusBreak(status: String) {
             Spacer(modifier = Modifier.padding(6.dp))
 
             TextViewBreakCard(
-                "Next Hour",
-                textColor = Color(0xFF001818),
+                duration2,
+                textColor = StatusTextColorBlack,
                 borderColor = Color(0xFFf6f8fc),
-                backgroundColor = Color(0xFFf6f8fc)
+                backgroundColor = BackGroundColorGrey
             )
 
             Spacer(modifier = Modifier.padding(6.dp))
 
             TextViewBreakCard(
-                "Next 2 Hours",
-                textColor = Color(0xFF001818),
+                duration3,
+                textColor = StatusTextColorBlack,
                 borderColor = Color(0xFFf6f8fc),
-                backgroundColor = Color(0xFFf6f8fc)
+                backgroundColor = BackGroundColorGrey
             )
 
             Spacer(modifier = Modifier.padding(6.dp))
 
             TextViewBreakCard(
-                "Custom",
-                textColor = Color(0xFF001818),
+                duration4,
+                textColor = StatusTextColorBlack,
                 borderColor = Color(0xFFf6f8fc),
-                backgroundColor = Color(0xFFf6f8fc)
+                backgroundColor = BackGroundColorGrey
             )
 
             Spacer(modifier = Modifier.padding(15.dp))
@@ -107,6 +110,7 @@ fun StatusBreak(status: String) {
         }
     }
 }
+
 
 @Composable
 fun TextViewBreakCard(
@@ -133,6 +137,7 @@ fun TextViewBreakCard(
     }
 }
 
+
 @Composable
 fun DoneButton() {
     Button(
@@ -146,47 +151,83 @@ fun DoneButton() {
     }
 }
 
+
 @Composable
 fun StatusViewText(status: String) {
-    val text = remember { mutableStateOf(status ) }
-    BasicTextField(modifier = Modifier.fillMaxWidth()
-        .background(Color.Transparent),
-        value = text.value,
-        onValueChange = {newValue->
-            text.value=newValue
-        },
-        textStyle = LocalTextStyle.current.copy(
-            color = MaterialTheme.colors.onSurface,
-            fontSize = 20.sp
-        ),
-        readOnly = true,
+    val bln = true
+    var text = remember { mutableStateOf(status) }
+    if (bln) {
+        BasicTextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.Transparent),
+            value = text.value,
+            onValueChange = { newValue ->
+                text.value = newValue
+            },
+            textStyle = LocalTextStyle.current.copy(
+                color = StatusTextColorBlack,
+                fontSize = 20.sp
+            ),
+            readOnly = true,
+        )
+    } else {
+        text = remember { mutableStateOf("") }
+        BasicTextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.Transparent),
+            value = text.value,
+            onValueChange = { newValue ->
+                text.value = newValue
+            },
 
-    )
-}
-
-@Composable
-fun CustomDialog(
-    dialogState:Boolean,
-    onDismissRequest : ( dialogState:Boolean)-> Unit
-) {
-    if(dialogState){
-        AlertDialog(onDismissRequest = {
-            onDismissRequest(false)
-
-        },
-            {
-                StatusBreak("Break")
-
+            textStyle = LocalTextStyle.current.copy(
+                color = StatusTextColorBlack,
+                fontSize = 20.sp,
+            ),
+            readOnly = false,
+            decorationBox = { innerTextField ->
+                if (text.value.isEmpty()) {
+                    Text("Add a custom title", color = Color(0xFF8495b1), fontSize = 20.sp)
+                }
+                innerTextField()
             }
-                // StatusView(takingCallOrNot = true, statusHeading = "Taking calls", statusSubHeading = "I can take calls")
         )
     }
+}
 
 
+@Composable
+fun Dialog(
+    status: String,
+    duration1: String,
+    duration2: String,
+    duration3: String,
+    duration4: String,
+    dialogState: Boolean,
+    onDismissRequest: (dialogState: Boolean) -> Unit
+) {
+    if (dialogState) {
+        Dialog(
+            onDismissRequest = { onDismissRequest(false) },
+        ) {
+            Surface(
+                shape = RoundedCornerShape(25.dp)
+            )
+            {
+                StatusBreak(status,duration1,duration2,duration3,duration4)
+
+            }
+        }
+    }
 }
 
 @Preview
 @Composable
 fun DefaultPreview2() {
-    StatusBreak(status = "In a Meeting")
+    StatusBreak("In a Meeting","Further Notice","Next Hour","Next 2 Hours","Custom")
+    //StatusBreak("Lunch","15 Minutes","30 Minutes","Next Hour","Custom")
+  //  StatusBreak("Vacation","1 Day","2 Days","1 Week","Custom")
+//    StatusBreak("","Further Notice","Next Hour","Next 2 Hours","Custom")
 }

@@ -16,7 +16,7 @@ class MeetingBreakTest {
     fun MeetingBreakTest(){
         val status="In a Meeting"
         composeRule.setContent {
-            StatusBreak(status = status)
+          //  StatusBreak(status = status)
         }
         composeRule.onNodeWithText(status).assertExists()
         composeRule.onNodeWithText(status).assertIsDisplayed()

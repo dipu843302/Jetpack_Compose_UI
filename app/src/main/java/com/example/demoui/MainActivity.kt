@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,7 +20,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.demoui.ui.theme.BackGroundColorGrey
 import com.example.demoui.ui.theme.DemoUITheme
+import com.example.demoui.ui.theme.StatusTextColorBlack
+import javax.net.ssl.SSLEngineResult.Status
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,33 +36,57 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Column(
                     modifier = Modifier
-                        .fillMaxWidth().fillMaxSize(),
+                        .fillMaxWidth()
+                        .fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
+                    verticalArrangement = Arrangement.Center,
 
-                    var dialogState by remember {
-                        mutableStateOf(false)
-                    }
-
-                    Button(onClick = {
-                        dialogState = true
-                    }) {
-                        Text(text = "Status")
-                    }
-                    CustomDialog(dialogState = dialogState, onDismissRequest = {
-                        dialogState=it
-                    })
-
-                    //   StatusViewText("In a meeting")
-                    // StatusBreak(status = "In a Meeting")
-                    // Available()
-                    //  NotTakingCalls()
-                    //StatusView(takingCallOrNot = true,"Taking Calls","I can take calls")
+                    ) {
+                    CallStatus()
+                 //   NavigationScreen(takingCallOrNot = true, statusHeading = "Available", statusSubHeading = "Take calls")
+                  //
                 }
             }
         }
     }
+}
+
+@Composable
+fun NavigationScreen(
+    takingCallOrNot: Boolean,
+    statusHeading: String,
+    statusSubHeading: String,
+
+) {
+    val navController = rememberNavController()
+    NavHost(navController, startDestination = "StatusView") {
+        composable(route = "StatusView") {
+            StatusView(
+                takingCallOrNot,
+                statusHeading,
+                statusSubHeading,
+            )
+        }
+        composable(route = "adopt") {
+            //AdoptionScreen()
+        }
+    }
+}
+
+@Composable
+fun CallStatus() {
+    var dialogState by remember {
+        mutableStateOf(false)
+    }
+
+    Button(onClick = {
+        dialogState = true
+    }) {
+        Text(text = "Status")
+    }
+    OpenDialog(dialogState = dialogState, onDismissRequest = {
+        dialogState = it
+    })
 }
 
 @Composable
@@ -64,6 +95,7 @@ fun StatusView(
     statusHeading: String,
     statusSubHeading: String,
 ) {
+
 
     val checkStatus by remember {
         mutableStateOf(takingCallOrNot)
@@ -75,7 +107,7 @@ fun StatusView(
             .heightIn(410.dp)
             .background(Color.White),
 
-        shape = RoundedCornerShape(corner = CornerSize(20.dp))
+        shape = RoundedCornerShape(corner = CornerSize(25.dp))
     ) {
         Column {
             Row(modifier = Modifier.padding(start = 22.dp, top = 26.dp, end = 24.dp)) {
@@ -107,6 +139,7 @@ fun StatusView(
     }
 }
 
+
 @Composable
 fun Available() {
     Card(
@@ -114,7 +147,7 @@ fun Available() {
             .width(320.dp)
             .heightIn(64.dp)
             .padding(start = 18.dp, top = 24.dp, bottom = 20.dp, end = 22.dp),
-        backgroundColor = Color(0xFFf6f8fc),
+        backgroundColor = BackGroundColorGrey,
         border = BorderStroke(1.dp, Color(0xff009900)),
         shape = RoundedCornerShape(corner = CornerSize(8.dp)),
     ) {
@@ -149,6 +182,7 @@ fun Available() {
     }
 }
 
+
 @Composable
 fun NotTakingCalls() {
     Card(
@@ -174,25 +208,37 @@ fun NotTakingCalls() {
                     .padding(8.dp), horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                StatusCardView("In a Meeting")
-                StatusCardView("At Lunch")
-                StatusCardView("On Vacation")
-                StatusCardView("Custom")
+                StatusCardView("In a Meeting", modifier = Modifier.clickable {
+//                    Dialog(
+//                        status = "In a Meeting",
+//                        duration1 = ,
+//                        duration2 = ,
+//                        duration3 = ,
+//                        duration4 = ,
+//                        dialogState = ,
+//                        onDismissRequest =
+//                    )
+                })
+                StatusCardView("At Lunch", modifier = Modifier)
+                StatusCardView("On Vacation", modifier = Modifier)
+                StatusCardView("Custom", modifier = Modifier)
             }
         }
     }
 }
 
+
 @Composable
 fun StatusCardView(
-    StatusText: String
+    StatusText: String,
+    modifier: Modifier
 ) {
     Card(
-        modifier = Modifier
+        modifier
             .width(320.dp)
             .height(50.dp)
             .padding(end = 14.dp, top = 8.dp),
-        backgroundColor = Color(0xFFf6f8fc),
+        backgroundColor = BackGroundColorGrey,
         shape = RoundedCornerShape(corner = CornerSize(8.dp)),
     ) {
         Row(
@@ -210,9 +256,33 @@ fun StatusCardView(
             )
             Text(
                 text = StatusText,
-                color = Color(0xFF020b2b),
+                color = StatusTextColorBlack,
                 fontSize = 14.sp,
             )
+        }
+    }
+}
+
+@Composable
+fun OpenDialog(
+    dialogState: Boolean,
+    onDismissRequest: (dialogState: Boolean) -> Unit
+) {
+    if (dialogState) {
+        androidx.compose.ui.window.Dialog(
+            onDismissRequest = { onDismissRequest(false) },
+        ) {
+            Surface(
+                shape = RoundedCornerShape(25.dp)
+            )
+            {
+                // StatusBreak(status = "asd")
+                StatusView(
+                    takingCallOrNot = true,
+                    statusHeading = "Available",
+                    statusSubHeading = "Take calls"
+                )
+            }
         }
     }
 }
