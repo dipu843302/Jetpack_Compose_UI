@@ -3,10 +3,7 @@ package com.example.demoui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,70 +13,35 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Transparent
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation.NavController
 import com.example.demoui.ui.theme.BackGroundColorGrey
 import com.example.demoui.ui.theme.DemoUITheme
 import com.example.demoui.ui.theme.StatusTextColorBlack
-import javax.net.ssl.SSLEngineResult.Status
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             DemoUITheme {
-                // A surface container using the 'background' color from the theme
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-
-                    ) {
-                    CallStatus()
-                 //   NavigationScreen(takingCallOrNot = true, statusHeading = "Available", statusSubHeading = "Take calls")
-                  //
-                }
+                StatusButton()
             }
         }
     }
 }
 
 @Composable
-fun NavigationScreen(
-    takingCallOrNot: Boolean,
-    statusHeading: String,
-    statusSubHeading: String,
-
-) {
-    val navController = rememberNavController()
-    NavHost(navController, startDestination = "StatusView") {
-        composable(route = "StatusView") {
-            StatusView(
-                takingCallOrNot,
-                statusHeading,
-                statusSubHeading,
-            )
-        }
-        composable(route = "adopt") {
-            //AdoptionScreen()
-        }
-    }
-}
-
-@Composable
-fun CallStatus() {
+fun StatusButton() {
     var dialogState by remember {
         mutableStateOf(false)
     }
 
     Button(onClick = {
+
         dialogState = true
     }) {
         Text(text = "Status")
@@ -94,8 +56,8 @@ fun StatusView(
     takingCallOrNot: Boolean,
     statusHeading: String,
     statusSubHeading: String,
+    navController: NavController
 ) {
-
 
     val checkStatus by remember {
         mutableStateOf(takingCallOrNot)
@@ -104,7 +66,7 @@ fun StatusView(
     Card(
         modifier = Modifier
             .width(320.dp)
-            .heightIn(410.dp)
+            .heightIn(450.dp)
             .background(Color.White),
 
         shape = RoundedCornerShape(corner = CornerSize(25.dp))
@@ -129,11 +91,12 @@ fun StatusView(
                         color = Color(0xFF8495b1),
                         fontSize = 15.sp
                     )
+
                 }
             }
             Column(modifier = Modifier.fillMaxWidth()) {
                 Available()
-                NotTakingCalls()
+                NotTakingCalls(navController)
             }
         }
     }
@@ -184,7 +147,7 @@ fun Available() {
 
 
 @Composable
-fun NotTakingCalls() {
+fun NotTakingCalls(navController: NavController) {
     Card(
         modifier = Modifier
             .padding(start = 10.dp)
@@ -209,19 +172,22 @@ fun NotTakingCalls() {
             ) {
 
                 StatusCardView("In a Meeting", modifier = Modifier.clickable {
-//                    Dialog(
-//                        status = "In a Meeting",
-//                        duration1 = ,
-//                        duration2 = ,
-//                        duration3 = ,
-//                        duration4 = ,
-//                        dialogState = ,
-//                        onDismissRequest =
-//                    )
+                    navController.navigate(Screen.StatusMeeting.route)
                 })
-                StatusCardView("At Lunch", modifier = Modifier)
-                StatusCardView("On Vacation", modifier = Modifier)
-                StatusCardView("Custom", modifier = Modifier)
+                StatusCardView("At Lunch", modifier = Modifier.clickable {
+                    navController.navigate(Screen.StatusLunch.route)
+
+                })
+                StatusCardView("On Vacation", modifier = Modifier.clickable {
+                    navController.navigate(Screen.StatusVacation.route)
+                })
+                StatusCardView("Custom", modifier = Modifier.clickable {
+                    navController.navigate(Screen.StatusCustom.route)
+
+                })
+
+                Spacer(modifier = Modifier.padding( 10.dp))
+
             }
         }
     }
@@ -272,16 +238,18 @@ fun OpenDialog(
         androidx.compose.ui.window.Dialog(
             onDismissRequest = { onDismissRequest(false) },
         ) {
-            Surface(
-                shape = RoundedCornerShape(25.dp)
+            Column(
+                // shape = RoundedCornerShape(25.dp),
+                modifier = Modifier
+                    .width(320.dp)
+                    .heightIn(440.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             )
             {
-                // StatusBreak(status = "asd")
-                StatusView(
-                    takingCallOrNot = true,
-                    statusHeading = "Available",
-                    statusSubHeading = "Take calls"
-                )
+                Surface(shape = RoundedCornerShape(25.dp)) {
+                    Navigation()
+                }
             }
         }
     }
@@ -291,7 +259,7 @@ fun OpenDialog(
 @Composable
 fun DefaultPreview() {
     DemoUITheme {
-        StatusView(takingCallOrNot = true, "Taking Calls", "I can take calls")
+        // StatusView(takingCallOrNot = true, "Taking Calls", "I can take calls")
 
         //  Available()
         //  NotTakingCalls()

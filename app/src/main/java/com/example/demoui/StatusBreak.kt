@@ -1,9 +1,11 @@
 package com.example.demoui
 
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -18,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.navigation.NavController
 import com.example.demoui.ui.theme.BackGroundColorGrey
 import com.example.demoui.ui.theme.StatusTextColorBlack
 
@@ -28,6 +31,7 @@ fun StatusBreak(
     duration2: String,
     duration3: String,
     duration4: String,
+    navController: NavController
 ) {
 
     Card(
@@ -47,11 +51,14 @@ fun StatusBreak(
         ) {
             Row {
                 Image(
-                    painter = painterResource(id = R.drawable.down), contentDescription = "",
+                    painter = painterResource(id = R.drawable.down), contentDescription = "Back arrow",
                     modifier = Modifier
                         .width(14.dp)
                         .heightIn(7.dp)
                         .padding(top = 6.dp)
+                        .clickable {
+                           navController.navigate(Screen.StatusView.route)
+                        }
                 )
                 Image(
                     painter = painterResource(id = R.drawable.red),
@@ -61,7 +68,12 @@ fun StatusBreak(
                         .heightIn(9.dp)
                         .width(9.dp)
                 )
-                StatusViewText(status)
+                if (status==""){
+                    StatusViewText(status,false)
+                }else{
+                    StatusViewText(status,true)
+
+                }
 
             }
             Text(
@@ -153,8 +165,8 @@ fun DoneButton() {
 
 
 @Composable
-fun StatusViewText(status: String) {
-    val bln = true
+fun StatusViewText(status: String,bln:Boolean) {
+
     var text = remember { mutableStateOf(status) }
     if (bln) {
         BasicTextField(
@@ -197,36 +209,10 @@ fun StatusViewText(status: String) {
     }
 }
 
-
-@Composable
-fun Dialog(
-    status: String,
-    duration1: String,
-    duration2: String,
-    duration3: String,
-    duration4: String,
-    dialogState: Boolean,
-    onDismissRequest: (dialogState: Boolean) -> Unit
-) {
-    if (dialogState) {
-        Dialog(
-            onDismissRequest = { onDismissRequest(false) },
-        ) {
-            Surface(
-                shape = RoundedCornerShape(25.dp)
-            )
-            {
-                StatusBreak(status,duration1,duration2,duration3,duration4)
-
-            }
-        }
-    }
-}
-
 @Preview
 @Composable
 fun DefaultPreview2() {
-    StatusBreak("In a Meeting","Further Notice","Next Hour","Next 2 Hours","Custom")
+ //   StatusBreak("In a Meeting","Further Notice","Next Hour","Next 2 Hours","Custom")
     //StatusBreak("Lunch","15 Minutes","30 Minutes","Next Hour","Custom")
   //  StatusBreak("Vacation","1 Day","2 Days","1 Week","Custom")
 //    StatusBreak("","Further Notice","Next Hour","Next 2 Hours","Custom")
